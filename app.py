@@ -30,6 +30,7 @@ class Book(db.Model):
 
 @app.route("/")
 def index():
+
     if "user_id" not in session:
         return redirect(url_for("login"))
 
@@ -62,7 +63,9 @@ def login():
 
 @app.route("/logout")
 def logout():
+
     session.clear()
+
     return redirect(url_for("login"))
 
 
@@ -76,25 +79,45 @@ def search():
 
     url = f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}"
 
-    response = requests.get(url)
-    data = response.json()
+    try:
 
-    if data["totalItems"] == 0:
-        flash("Book not found")
+        response = requests.get(url)
+
+        data = response.json()
+
+    except:
+
+        flash("Error connecting to Google Books API")
+
         return redirect(url_for("index"))
 
-    volume_info = data["items"][0]["volumeInfo"]
+    if data.get("totalItems", 0) == 0:
 
-    title = volume_info.get("title", "N/A")
+        flash("Book not found")
 
-    authors = volume_info.get("authors", ["N/A"])
-    author = ", ".join(authors)
+        return redirect(url_for("index"))
 
-    page_count = volume_info.get("pageCount", 0)
+    try:
 
-    average_rating = volume_info.get("averageRating", 0)
+        volume_info = data["items"][0]["volumeInfo"]
 
-    thumbnail = volume_info.get("imageLinks", {}).get("thumbnail", "")
+        title = volume_info.get("title", "N/A")
+
+        authors = volume_info.get("authors", ["N/A"])
+
+        author = ", ".join(authors)
+
+        page_count = volume_info.get("pageCount", 0)
+
+        average_rating = volume_info.get("averageRating", 0)
+
+        thumbnail = volume_info.get("imageLinks", {}).get("thumbnail", "")
+
+    except:
+
+        flash("Error processing book data")
+
+        return redirect(url_for("index"))
 
     book = Book(
         isbn=isbn,
@@ -107,6 +130,7 @@ def search():
     )
 
     db.session.add(book)
+
     db.session.commit()
 
     flash("Book added successfully")
@@ -120,6 +144,7 @@ def delete(book_id):
     book = Book.query.get_or_404(book_id)
 
     db.session.delete(book)
+
     db.session.commit()
 
     flash("Book deleted")
@@ -128,6 +153,7 @@ def delete(book_id):
 
 
 def create_database():
+
     with app.app_context():
 
         db.create_all()
@@ -135,15 +161,19 @@ def create_database():
         user_exists = User.query.filter_by(username="student").first()
 
         if not user_exists:
+
             user = User(
                 username="student",
                 password="password"
             )
 
             db.session.add(user)
+
             db.session.commit()
 
 
 if __name__ == "__main__":
+
     create_database()
+
     app.run(debug=True)
