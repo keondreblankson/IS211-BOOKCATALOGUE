@@ -91,7 +91,7 @@ def search():
 
         return redirect(url_for("index"))
 
-    if data.get("totalItems", 0) == 0:
+    if data.get("totalItems", 1) == 0:
 
         flash("Book not found")
 
