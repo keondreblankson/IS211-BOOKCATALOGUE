@@ -1,0 +1,56 @@
+body {
+    font-family: Arial;
+    background: #f2f2f2;
+    margin: 0;
+}
+
+header {
+    background: #222;
+    color: white;
+    padding: 20px;
+}
+
+header a {
+    color: white;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    margin-top: 30px;
+}
+
+form {
+    margin-bottom: 30px;
+}
+
+input {
+    padding: 10px;
+    width: 300px;
+}
+
+button {
+    padding: 10px 15px;
+    background: royalblue;
+    color: white;
+    border: none;
+}
+
+table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+}
+
+.message {
+    background: lightyellow;
+    padding: 10px;
+}
