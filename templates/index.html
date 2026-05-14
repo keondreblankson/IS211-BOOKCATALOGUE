@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Add Book</h2>
+
+<form method="POST" action="{{ url_for('search') }}">
+
+    <label>ISBN</label>
+
+    <input
+        type="text"
+        name="isbn"
+        placeholder="9781449372620"
+        required
+    >
+
+    <button type="submit">Search</button>
+
+</form>
+
+<h2>Your Books</h2>
+
+{% if books %}
+
+<table>
+
+    <tr>
+        <th>Cover</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Pages</th>
+        <th>Rating</th>
+        <th>Delete</th>
+    </tr>
+
+    {% for book in books %}
+
+    <tr>
+
+        <td>
+            {% if book.thumbnail %}
+                <img src="{{ book.thumbnail }}" width="60">
+            {% endif %}
+        </td>
+
+        <td>{{ book.title }}</td>
+
+        <td>{{ book.author }}</td>
+
+        <td>{{ book.page_count }}</td>
+
+        <td>{{ book.average_rating }}</td>
+
+        <td>
+            <form method="POST" action="{{ url_for('delete', book_id=book.id) }}">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+<p>No books saved yet.</p>
+
+{% endif %}
+
+{% endblock %}
